@@ -16,6 +16,8 @@ from sklearn.metrics import f1_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.feature_selection import SelectFromModel
+from sklearn.metrics import roc_curve 
+from sklearn.metrics import roc_auc_score
 
 #Upload data into a DataFrame
 file_path_expressions = #Path to data goes here
@@ -89,4 +91,20 @@ plt.show()
 
 #Print feature importance list
 print(df_feature_importance)
+
+#Measure AUC score
+y_prob = rf_classifier.predict_proba(X_test)[:,1]
+fpr, tpr, thresholds = roc_curve(y_test, y_prob, pos_label = 'SSc')
+auc_score = roc_auc_score(y_test,y_prob)
+
+#Plot AUC score
+plt.figure(figsize = (10,6))
+plt.plot(fpr,tpr, label=f'Random Forest (AUC = {auc_score:.2f})')
+plt.plot([0,1], [0,1], linestyle='--', color = 'gray', label = 'Random Forest Classifier')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve for Random Forest')
+plt.legend()
+plt.grid(True)
+plt.show()
 
